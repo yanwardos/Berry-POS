@@ -1,0 +1,24 @@
+{
+  "name": "berry-pos",
+  "version": "1.0.0",
+  "main": "main.js",
+  "description": "POSNext in Kiosk Mode",
+  "author": "Sainaadongdo",
+  "license": "MIT",
+  "scripts": {
+    "start": "electron .",
+    "build": "electron-builder"
+  },
+  "devDependencies": {
+    "electron": "^30.0.0",
+    "electron-builder": "^24.13.3"
+  },
+  "build": {
+    "appId": "com.sainaadongdo.berrypos",
+    "productName": "Berry POS",
+    "win": {
+      "target": "nsis",
+      "icon": "berry-logo.ico"
+    }
+  }
+}
