@@ -18,7 +18,7 @@
     "productName": "Berry POS",
     "win": {
       "target": "nsis",
-      "icon": "berry-logo.ico"
+      "icon": "assets/favicon-310x310.png"
     }
   }
 }

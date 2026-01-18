@@ -1,18 +1,61 @@
-const { app, BrowserWindow, session } = require("electron");
+const { app, BrowserWindow, session, Tray, screen } = require("electron");
+
+// function getPositioning() {
+//   const {screen} = require("electron");
+//   const primaryDisplay = screen.getPrimaryDisplay();
+//   const bounds = primaryDisplay.bounds;
+//   const workArea = primaryDisplay.workArea;
+
+//   let taskbarPosition;
+//   let taskbarSize;
+
+//   if (bounds.width > workArea.width) { // Taskbar is on the left or right
+//     taskbarSize = bounds.width - workArea.width;
+//     if (workArea.x > 0) {
+      
+//       taskbarPosition = 'Left';
+//     } else {
+//       taskbarPosition = 'Right';
+//     }
+//   } else if (bounds.height > workArea.height) { // Taskbar is on the top or bottom
+//     taskbarSize = bounds.height - workArea.height;
+//     if (workArea.y > 0) {
+//       taskbarPosition = 'Top';
+//     } else {
+//       taskbarPosition = 'Bottom';
+//     }
+//   } else {
+//     taskbarPosition = 'Unknown/Auto-hidden';
+//     taskbarSize = 0;
+//   }
+// }
 
 function createWindow() {
+  const PrimaryDisplay = screen.getPrimaryDisplay();
+
+  const workArea = PrimaryDisplay.workArea;
+  
+  const {width: workAreaWidth, height: workAreaHeight} = PrimaryDisplay.workAreaSize;
+
+  const winWidth = workAreaWidth;
+  const winHeight = workAreaHeight;
+  
   const win = new BrowserWindow({
-    width: 960,
-    height: 1080,
-    x: 100,
-    y: 0,
+    width: winWidth,
+    height: winHeight,
+    x: workArea.x,
+    y: workArea.y,
     kiosk: false, // IMPORTANT: not true
     fullscreen: false,
     alwaysOnTop: false, // user can switch apps
     autoHideMenuBar: true,
+    minimizable: false,
     closable: false,
     movable: false,
     resizable: false,
+    frame: false,
+    skipTaskbar: true,  
+    icon: __dirname + "/assets/favicon-310x310.png",
     webPreferences: {
       preload: __dirname + "/preload.js",
       contextIsolation: true,
@@ -39,7 +82,7 @@ function createWindow() {
   win.loadURL("https://erp.berryprinting.my.id/pos");
 
   // Optional: open devtools for sanity
-  win.webContents.openDevTools();
+  // win.webContents.openDevTools();
 }
 
 const { ipcMain } = require("electron");
@@ -81,7 +124,7 @@ ipcMain.on("open-url-for-print", (event, url) => {
   });
 
   printWin.webContents.on("did-finish-load", () => {
-    console.log('did-finish-load triggered');
+    // console.log('did-finish-load triggered');
     // printWin.webContents.print(
     //   {
     //       printBackground: false,
@@ -93,7 +136,6 @@ ipcMain.on("open-url-for-print", (event, url) => {
   });
 
   printWin.loadURL(url);
-  printWin.webContents.openDevTools();
 });
 
 app.whenReady().then(() => {
